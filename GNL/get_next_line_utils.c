@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maw <maw@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: masase <masase@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 18:43:29 by maw               #+#    #+#             */
-/*   Updated: 2024/09/23 15:57:16 by maw              ###   ########.fr       */
+/*   Updated: 2024/10/12 19:15:21 by masase           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,10 @@ char	*ft_strjoin(const char *s1, const char *s2)
 	j = 0;
 	i = 0;
 	lent = 0;
-	lent += ft_strlen(s1) + ft_strlen(s2);
+	lent = ft_strlen(s1) + ft_strlen(s2);
 	join = malloc((lent + 1) * sizeof(char));
 	if (join == NULL)
-		return (join);
+		return (NULL);
 	while (s1[i])
 	{
 		join[i] = s1[i];
@@ -77,7 +77,7 @@ char	*ft_substr(const char *s, unsigned int start, size_t len)
 		len = ft_strlen(s) - start;
 	sub = malloc((len + 1) * sizeof(char));
 	if (sub == NULL)
-		return (sub);
+		return (NULL);
 	i = 0;
 	while (s[start] && i < len)
 	{
@@ -99,7 +99,7 @@ char	*ft_strdup(const char *source)
 	i = 0;
 	dup = malloc((len + 1) * sizeof(char));
 	if (dup == NULL)
-		return (dup);
+		return (NULL);
 	while (source[i])
 	{
 		dup[i] = source[i];

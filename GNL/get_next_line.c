@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: maw <maw@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: masase <masase@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 18:42:53 by maw               #+#    #+#             */
-/*   Updated: 2024/09/26 18:55:30 by maw              ###   ########.fr       */
+/*   Updated: 2024/10/12 19:54:31 by masase           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,15 @@ char	*feedline(char *s)
 	char	*feed;
 
 	i = 0;
+	if (!s)
+		return (NULL);
 	while (s[i] != '\0' && s[i] != '\n')
 	{
 		i++;
 	}
 	feed = ft_substr(s, 0, i + 1);
+	if (!feed)
+		return (NULL);
 	return (feed);
 }
 
@@ -40,6 +44,11 @@ static	char	*reading(int fd, char *get, char *reste, char *buffer)
 		if (get == NULL)
 		{
 			get = ft_strdup(buffer);
+			if (get == NULL)
+			{
+				free(get);
+				return (NULL);
+			}
 			if (ft_strchr(get, '\n') != NULL)
 				return (get);
 		}
@@ -48,6 +57,8 @@ static	char	*reading(int fd, char *get, char *reste, char *buffer)
 			reste = ft_strjoin(get, buffer);
 			free(get);
 			get = reste;
+			if (!get)
+				return (NULL);
 			if (ft_strchr(get, '\n') != NULL)
 				return (get);
 		}
@@ -57,9 +68,15 @@ static	char	*reading(int fd, char *get, char *reste, char *buffer)
 
 static	char	*setupget(char *get, char *reste)
 {
+	reste = NULL;
 	if (ft_strchr(get, '\n') != NULL)
 	{
 		reste = ft_strdup(ft_strchr(get, '\n') + 1);
+		if (!reste)
+		{
+			free(reste);
+			return (NULL);
+		}
 		free(get);
 		get = reste;
 		if (get == NULL)
@@ -89,11 +106,13 @@ char	*get_next_line(int fd)
 		return (NULL);
 	}
 	get = reading(fd, get, reste, buffer);
+	if (!get)
+		return (NULL);
 	if (get)
 	{
 		line = feedline(get);
 		get = setupget(get, reste);
-		if (line[0] == '\0')
+		if (!line || line[0] == '\0')
 		{
 			free(line);
 			return (NULL);
