@@ -6,11 +6,13 @@
 /*   By: masase <masase@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 18:42:53 by maw               #+#    #+#             */
-/*   Updated: 2024/10/12 19:54:31 by masase           ###   ########.fr       */
+/*   Updated: 2024/10/14 14:11:27 by masase           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+
+
 
 char	*feedline(char *s)
 {
@@ -30,7 +32,7 @@ char	*feedline(char *s)
 	return (feed);
 }
 
-static	char	*reading(int fd, char *get, char *reste, char *buffer)
+static	char	*reading(int fd, char *stash, char *temp, char *buffer)
 {
 	int	readcount;
 
@@ -39,79 +41,77 @@ static	char	*reading(int fd, char *get, char *reste, char *buffer)
 	{
 		readcount = read(fd, buffer, BUFFER_SIZE);
 		if (readcount == -1)
-			return (NULL);
-		buffer[readcount] = '\0';
-		if (get == NULL)
 		{
-			get = ft_strdup(buffer);
-			if (get == NULL)
-			{
-				free(get);
+			free(stash);
+			return (NULL);
+		}
+		buffer[readcount] = '\0';
+		if (stash == NULL)
+		{
+			stash = ft_strdup(buffer);
+			if (stash == NULL)
 				return (NULL);
-			}
-			if (ft_strchr(get, '\n') != NULL)
-				return (get);
+			if (ft_strchr(stash, '\n') != NULL)
+				return (stash);
 		}
 		else
 		{
-			reste = ft_strjoin(get, buffer);
-			free(get);
-			get = reste;
-			if (!get)
+			temp = ft_strjoin(stash, buffer);
+			if (!temp)
+			{
+				free(stash);
 				return (NULL);
-			if (ft_strchr(get, '\n') != NULL)
-				return (get);
+			}
+			free(stash);
+			stash = temp;
 		}
+		if (ft_strchr(stash, '\n') != NULL)
+			return (stash);
 	}
-	return (get);
+	return (stash);
 }
 
-static	char	*setupget(char *get, char *reste)
+static	char	*setupstash(char *stash, char *temp)
 {
-	reste = NULL;
-	if (ft_strchr(get, '\n') != NULL)
+	if (ft_strchr(stash, '\n') != NULL)
 	{
-		reste = ft_strdup(ft_strchr(get, '\n') + 1);
-		if (!reste)
+		temp = ft_strdup(ft_strchr(stash, '\n') + 1);
+		if (!temp)
 		{
-			free(reste);
+			free(stash);
 			return (NULL);
 		}
-		free(get);
-		get = reste;
-		if (get == NULL)
-			return (NULL);
+		free(stash);
+		stash = temp;
 	}
 	else
 	{
-		free(get);
-		get = NULL;
+		free(stash);
+		stash = NULL;
 	}
-	return (get);
+	return (stash);
 }
 
 char	*get_next_line(int fd)
 {
 	char		buffer[BUFFER_SIZE + 1];
-	static char	*get;
+	static char	*stash;
 	char		*line;
-	char		*reste;
+	char		*temp;
 
 	line = NULL;
-	reste = NULL;
+	temp = NULL;
 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
 	{
-		free(get);
-		get = NULL;
+		free(stash);
+		stash = NULL;
 		return (NULL);
 	}
-	get = reading(fd, get, reste, buffer);
-	if (!get)
-		return (NULL);
-	if (get)
+	stash = reading(fd, stash, temp, buffer);
+	if (stash)
 	{
-		line = feedline(get);
-		get = setupget(get, reste);
+		line = feedline(stash);
+		stash = setupstash(stash, temp);
 		if (!line || line[0] == '\0')
 		{
 			free(line);
@@ -121,27 +121,27 @@ char	*get_next_line(int fd)
 	return (line);
 }
 
-// int main(void)
-// {
-// 	int fd;
-// 	char *line;
+int main(void)
+{
+	int fd;
+	char *line;
 
-// 	fd = open("test.txt", O_RDONLY);
-// 	while (1)
-// 	{
-// 		line = get_next_line(fd);
-// 		if (!line)
-// 		{
-// 			break ;
-// 		}
-// 		printf("%s\n", line);
-// 		free(line);
-// 	}
-// 	close(fd);
-// 	return (0);
-// }
+	fd = open("test.txt", O_RDONLY);
+	while (1)
+	{
+		line = get_next_line(fd);
+		if (!line)
+		{
+			break ;
+		}
+		printf("%s\n", line);
+		free(line);
+	}
+	close(fd);
+	return (0);
+}
 
-// // // objectif creer un buffer que je vais print
+// // objectif creer un buffer que je vais print
 // puis ensuite freee ainsi de suite jusqua la fin
 // de la laligne en gros
 
