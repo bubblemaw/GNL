@@ -6,7 +6,7 @@
 /*   By: masase <masase@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 18:42:53 by maw               #+#    #+#             */
-/*   Updated: 2024/10/14 14:11:27 by masase           ###   ########.fr       */
+/*   Updated: 2024/10/18 18:59:21 by masase           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,25 +121,25 @@ char	*get_next_line(int fd)
 	return (line);
 }
 
-int main(void)
-{
-	int fd;
-	char *line;
+// int main(void)
+// {
+// 	int fd;
+// 	char *line;
 
-	fd = open("test.txt", O_RDONLY);
-	while (1)
-	{
-		line = get_next_line(fd);
-		if (!line)
-		{
-			break ;
-		}
-		printf("%s\n", line);
-		free(line);
-	}
-	close(fd);
-	return (0);
-}
+// 	fd = open("test.txt", O_RDONLY);
+// 	while (1)
+// 	{
+// 		line = get_next_line(fd);
+// 		if (!line)
+// 		{
+// 			break ;
+// 		}
+// 		printf("%s\n", line);
+// 		free(line);
+// 	}
+// 	close(fd);
+// 	return (0);
+// }
 
 // // objectif creer un buffer que je vais print
 // puis ensuite freee ainsi de suite jusqua la fin
