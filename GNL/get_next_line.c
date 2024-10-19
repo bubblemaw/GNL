@@ -6,13 +6,18 @@
 /*   By: masase <masase@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 18:42:53 by maw               #+#    #+#             */
-/*   Updated: 2024/10/18 18:59:21 by masase           ###   ########.fr       */
+/*   Updated: 2024/10/19 21:20:13 by masase           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-
+char	*freestash(char *stash)
+{
+	free(stash);
+	stash = NULL;
+	return (stash);
+}
 
 char	*feedline(char *s)
 {
@@ -40,33 +45,19 @@ static	char	*reading(int fd, char *stash, char *temp, char *buffer)
 	while (readcount > 0)
 	{
 		readcount = read(fd, buffer, BUFFER_SIZE);
-		if (readcount == -1)
-		{
-			free(stash);
-			return (NULL);
-		}
 		buffer[readcount] = '\0';
 		if (stash == NULL)
 		{
 			stash = ft_strdup(buffer);
-			if (stash == NULL)
-				return (NULL);
-			if (ft_strchr(stash, '\n') != NULL)
-				return (stash);
 		}
 		else
 		{
 			temp = ft_strjoin(stash, buffer);
-			if (!temp)
-			{
-				free(stash);
-				return (NULL);
-			}
 			free(stash);
 			stash = temp;
 		}
-		if (ft_strchr(stash, '\n') != NULL)
-			return (stash);
+		if (!stash || ft_strchr(stash, '\n'))
+			break ;
 	}
 	return (stash);
 }
@@ -85,10 +76,7 @@ static	char	*setupstash(char *stash, char *temp)
 		stash = temp;
 	}
 	else
-	{
-		free(stash);
-		stash = NULL;
-	}
+		stash = freestash(stash);
 	return (stash);
 }
 
@@ -103,8 +91,7 @@ char	*get_next_line(int fd)
 	temp = NULL;
 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
 	{
-		free(stash);
-		stash = NULL;
+		stash = freestash(stash);
 		return (NULL);
 	}
 	stash = reading(fd, stash, temp, buffer);
@@ -115,6 +102,7 @@ char	*get_next_line(int fd)
 		if (!line || line[0] == '\0')
 		{
 			free(line);
+			stash = freestash(stash);
 			return (NULL);
 		}
 	}
