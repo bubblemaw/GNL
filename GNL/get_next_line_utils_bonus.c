@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*   get_next_line_utils_bonus.c                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: masase <masase@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/09 18:43:29 by maw               #+#    #+#             */
-/*   Updated: 2024/10/19 19:24:48 by masase           ###   ########.fr       */
+/*   Updated: 2024/10/19 21:33:29 by masase           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*ft_strchr(const char *str, char c)
 {
@@ -72,7 +72,7 @@ char	*ft_substr(const char *s, unsigned int start, size_t len)
 	if (!s)
 		return (NULL);
 	if (start > ft_strlen(s))
-		return (NULL);
+		return (ft_strdup(""));
 	if (len > ft_strlen(s) - start)
 		len = ft_strlen(s) - start;
 	sub = malloc((len + 1) * sizeof(char));
@@ -95,8 +95,6 @@ char	*ft_strdup(const char *source)
 	int		len;
 	char	*dup;
 
-	if (!source)
-		return (NULL);
 	len = ft_strlen(source);
 	i = 0;
 	dup = malloc((len + 1) * sizeof(char));
